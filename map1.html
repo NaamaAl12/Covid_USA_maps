@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <title>COVID-19 Rates (US Counties, 2020)</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js"></script>
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    #map {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 100%;
+    }
+
+    /* legend panel */
+    #legend {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 190px;
+      background: #fff;
+      margin-right: 20px;
+      margin-bottom: 40px;
+      padding: 10px 12px;
+      border-radius: 3px;
+      text-align: left;
+      font-family: 'Open Sans', sans-serif;
+      font-size: 10pt;
+    }
+
+    .legend-row {
+      display: flex;
+      align-items: center;
+      margin: 6px 0;
+    }
+
+    .swatch {
+      width: 18px;
+      height: 12px;
+      margin-right: 8px;
+      border: 1px solid #ddd;
+    }
+
+    a {
+      color: black;
+    }
+    #title {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin-top: 20px;
+      margin-left: 20px;
+      font-size: 25pt;
+      color: white;
+      z-index: 1;
+    }
+
+    #subtitle {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin-top: 70px;
+      margin-left: 20px;
+      font-size: 15pt;
+      color: white;
+      z-index: 1;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="map"></div>
+  <div id="legend"></div>
+  <div id="title">COVID-19 Rates (US Counties, 2020)</div>
+  <div id="subtitle">Choropleth by cases per 1,000 residents</div>
+
+  <script>
+    mapboxgl.accessToken =
+      "pk.eyJ1IjoibmFsMTIiLCJhIjoiY21reXBkYmxtMDltbDNyb2NmcjZpaDdvdiJ9.ZX7GLNtaTYyTjLOhx4ITqg";
+
+    const map = new mapboxgl.Map({
+      container: "map",
+      style: "mapbox://styles/mapbox/dark-v10",
+      center: [-96, 37],
+      zoom: 3,
+      minZoom: 2,
+      projection: "albers"
+    });
+
+    map.on("load", () => {
+
+      
+      const breaks = [0, 50, 100, 200, 400];
+      const colors = ['#f2f0f7', '#cbc9e2', '#9e9ac8', '#756bb1', '#54278f'];
+
+      map.addSource("covid-rates", {
+        type: "geojson",
+        data: "assets/us-covid-2020-rates.geojson"
+      });
+
+      map.addLayer({
+        id: "covid-rates-layer",
+        type: "fill",
+        source: "covid-rates",
+        paint: {
+          "fill-color": [
+            "interpolate",
+            ["linear"],
+            ["coalesce", ["to-number", ["get", "rates"]], 0],
+            breaks[0], colors[0],
+            breaks[1], colors[1],
+            breaks[2], colors[2],
+            breaks[3], colors[3],
+            breaks[4], colors[4]
+          ],
+          "fill-opacity": 0.8,
+          "fill-outline-color": "rgba(255,255,255,0.35)"
+        }
+      });
+
+      
+      map.on("click", "covid-rates-layer", (e) => {
+        const p = e.features[0].properties;
+
+        new mapboxgl.Popup()
+          .setLngLat(e.lngLat)
+          .setHTML(
+            `<strong>${p.county}, ${p.state}</strong><br>
+             <strong>Rate:</strong> ${Number(p.rates).toFixed(2)} cases / 1,000<br>
+             <strong>Cases:</strong> ${p.cases}<br>
+             <strong>Deaths:</strong> ${p.deaths}`
+          )
+          .addTo(map);
+      });
+
+     
+      map.on("mouseenter", "covid-rates-layer", () => {
+        map.getCanvas().style.cursor = "pointer";
+      });
+      map.on("mouseleave", "covid-rates-layer", () => {
+        map.getCanvas().style.cursor = "";
+      });
+
+      
+      const legend = document.getElementById("legend");
+
+      let html = `<div style="text-align:center; font-weight:700; margin-bottom:8px;">COVID-19 Rate</div>`;
+      html += `<div style="margin-bottom:8px; text-align:center;">Cases per 1,000 residents</div>`;
+
+     
+      for (let i = 0; i < breaks.length; i++) {
+        const start = breaks[i];
+        const end = breaks[i + 1];
+
+        let label = "";
+        if (i === breaks.length - 1) {
+          label = `${start}+`;
+        } else {
+          label = `${start}–${end}`;
+        }
+
+        html += `
+          <div class="legend-row">
+            <div class="swatch" style="background:${colors[i]};"></div>
+            <div>${label}</div>
+          </div>
+        `;
+      }
+
+      html += `<div style="text-align:right; margin-top:10px; font-size:9pt;">
+                Source: <a href="https://www.nytimes.com/interactive/2021/us/covid-cases.html" target="_blank">NYT</a> +
+                <a href="https://www.census.gov/programs-surveys/acs" target="_blank">ACS</a>
+              </div>`;
+
+      legend.innerHTML = html;
+    });
+  </script>
+
+</body>
+
+</html>
