@@ -1,4 +1,4 @@
-# COVID USA Maps (2020)
+<img width="1117" height="608" alt="image" src="https://github.com/user-attachments/assets/0e001870-2543-406d-ad75-6c84c29a3194" /># COVID USA Maps (2020)
 
 This project contains two interactive web maps created with Mapbox using county-level COVID-19 data for the United States (2020). The goal is to compare spatial patterns using two different thematic mapping approaches: a choropleth map of case rates and a proportional symbol map of total cases.
 
