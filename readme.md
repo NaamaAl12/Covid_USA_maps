@@ -40,6 +40,6 @@ This project contains two interactive web maps created with Mapbox using county-
 
 ## Acknowledgements
 - Base map tiles and rendering: Mapbox
-- COVID-19 data: NYT
+- COVID-19 data: New York Times
 - Population/rate source: ACS
 - Course materials and guidance: GEOG 458 (UW)
