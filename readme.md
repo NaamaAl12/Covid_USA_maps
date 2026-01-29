@@ -22,7 +22,7 @@ This project contains two interactive web maps created with Mapbox using county-
 - Interaction: click a circle to view county/state, cases, and deaths
 - Legend: proportional circle sizes for case thresholds
 
-## Primary Functions Added Beyond Lecture Basics
+## Primary Functions Added
 - Popups on click for both thematic layers
 - Proportional symbol legend built with HTML/CSS
 
