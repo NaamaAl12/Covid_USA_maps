@@ -3,7 +3,7 @@
 This project contains two interactive web maps created with Mapbox using county-level COVID-19 data for the United States (2020). The goal is to compare spatial patterns using two different thematic mapping approaches: a choropleth map of case rates and a proportional symbol map of total cases.
 
 ## Live Maps (GitHub Pages)
-- Map 1 (Rates): https://github.com/NaamaAl12/Covid_USA_maps/blob/master/map1.html
+- Map 1 (Rates): https://github.com/NaamaAl12/Covid_USA_maps/127.0.0.1:5500/map1.html
 - Map 2 (Cases): https://naamaal12.github.io/Covid_USA_maps/map2.html
 
 ## Screenshots
